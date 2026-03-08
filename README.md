@@ -1,60 +1,126 @@
-# Biblioteca en Solana
+PhoneLedger — Inventario de Teléfonos en Solana
 
-![banner](./images/banner-biblioteca.jpg)
+PhoneLedger es un programa on-chain construido en Rust utilizando el framework Anchor sobre la blockchain de Solana. Su objetivo es permitir que una tienda de celulares o negocio tecnológico registre y administre su inventario de teléfonos de forma descentralizada, segura y permanente en la blockchain.
 
-CRUD básico de un Solana Program desarrollado con Rust y Anchor desde el Solana Playground. 
+Este sistema guarda la información directamente en cuentas del programa, lo que significa que los datos no dependen de un servidor tradicional.
 
-Puedes comenzar dándole Fork a este repositorio (abajo te explicamos como 👇), **hemos preparado un entorno de codespaces listo para que no tengas que instalar nada**, solo déjate llevar por la fluidez de los ejercicios y temas desarrollados especialmente para ti. 
+Objetivo del proyecto
 
-Asegúrate de clonar este repositorio a tu cuenta usando el botón **`Fork`**.
+PhoneLedger funciona como un sistema de gestión de inventario en blockchain que permite realizar operaciones básicas sobre teléfonos registrados.
 
-![fork](./images/fork.png)
+Las principales funciones del sistema son:
 
-## Importando el proyecto 
+• Crear el perfil de una tienda de teléfonos asociado a una wallet
+• Registrar nuevos teléfonos con su información
+• Actualizar información del inventario
+• Activar o desactivar disponibilidad de un teléfono
+• Eliminar teléfonos del sistema
 
-Ya con el repositorio en tu cuenta lo siguiente que debes hacer copiar el `enlace de tu repositorio`, lo que se puede hacer directamente desdel navegador:
+Toda la información queda registrada de manera transparente, segura e inmutable en la red de Solana.
 
-![repo](./images/repo.png)
-Posteriormente, lo uniremos con el siguiente enlace en nuestro navegador de preferencia:
+Estructura del programa
 
-```url
-https://beta.solpg.io/
-```
+El programa organiza los datos en una jerarquía simple dentro de la blockchain.
 
-Lo que nos dará algo parecido a:
+Wallet (Owner)
+│
+└── Cuenta de Tienda de Teléfonos
+│
+├── Teléfono 1
+├── Teléfono 2
+└── Teléfono 3
 
-![url](./images/url.png)
+Cada tienda tiene su propio inventario vinculado a la wallet del propietario.
 
-Al pulsar enter seremos enviados al `Solana Playground` con nuestro proyecto abierto:
+Estructuras de datos principales
+Tienda de Teléfonos
 
-![pg](./images/pg.png)
+Campo | Tipo | Descripción
+owner | Pubkey | Dirección de la wallet propietaria
+nombre | String | Nombre del negocio o tienda
+inventario | Vec | Lista de teléfonos almacenados
 
-Para guardarlo solo damos clic en el boton `import` y asignamos un nombre:
+Teléfono
 
-![import](./images/import.png)
+Campo | Tipo | Descripción
+nombre | String | Nombre del modelo de teléfono
+marca | String | Marca del dispositivo
+precio | u32 | Precio del teléfono
+activo | bool | Indica si está disponible en el inventario
 
-## Preparacion del entorno
+Funciones del programa
 
-Primero conectaremos el entorno con la devnet, lo que tambien procederá a la creación de una wallet. Para eso daremos clic en donde dice **Not Conected**:
+El contrato inteligente incluye varias instrucciones para interactuar con los datos:
 
-![playground1](./images/playground1.png)
+crear_tienda(nombre)
+Crea una nueva cuenta de tienda vinculada al propietario.
 
-Saldrá la siguiente ventana donde daremos en el botón **Continue**:
+registrar_telefono(nombre, marca, precio)
+Agrega un teléfono nuevo al inventario.
 
-![wallet](./images/wallet.png)
+actualizar_precio(nombre, nuevo_precio)
+Permite modificar el precio de un teléfono existente.
 
-Como resultado se mostrará la siguiente información:
+cambiar_estado(nombre)
+Activa o desactiva la disponibilidad de un teléfono.
 
-![status](./images/status.png)
+eliminar_telefono(nombre)
+Remueve un teléfono del inventario almacenado.
 
-* En verde: el estado de la conexión y el entorno al que se encuentra conectado
+Direcciones derivadas (PDA)
 
-* En amarillo: la la dirección de la wallet conectada
+El programa utiliza Program Derived Addresses (PDA) para generar cuentas únicas dentro de Solana.
 
-* En azul: la cantidad de tokens en la wallet
+Cuenta | Seeds utilizadas
+Tienda | ["tienda_telefonos", owner_pubkey]
 
-> ℹ️ ¿Quieres ver el ejemplo de un "Hola Mundo" en Solana?. Da clic aquí: 👉 [Ver Ejemplo](https://github.com/WayLearnLatam/Solana-starter-kit/tree/1fc6349ba63375a3fe223d8d56911bc64765459b/build-deploy)
+Esto asegura que:
 
-> ℹ️ ¿Cuentas con una Wallet de [Phantom](https://phantom.com/) que deseas importar?, Da clic aquí para ver como hacerlo: 
+• Cada wallet puede tener solo una tienda registrada
+• Los datos no pueden ser modificados por terceros
+• Solo el propietario de la cuenta puede actualizar su inventario
 
-👉 [Como Importar una Wallet](https://github.com/WayLearnLatam/Solana-starter-kit/tree/1fc6349ba63375a3fe223d8d56911bc64765459b/import-key-a-playground)
+Cómo ejecutar el proyecto
+
+Para probar el programa puedes utilizar Solana Playground.
+
+Pasos básicos:
+
+Abrir Solana Playground
+
+Crear o pegar el código dentro del archivo src/lib.rs
+
+Conectar tu wallet en la red Devnet
+
+Presionar Build para compilar el programa
+
+Presionar Deploy para publicarlo
+
+Ejecutar las funciones desde el panel de pruebas
+
+Ejemplo de uso
+
+Flujo típico de interacción con el programa:
+
+crear_tienda("Tech Mobile Store")
+
+registrar_telefono("iPhone 15", "Apple", 25000)
+
+registrar_telefono("Galaxy S24", "Samsung", 23000)
+
+cambiar_estado("iPhone 15")
+
+actualizar_precio("Galaxy S24", 24000)
+
+eliminar_telefono("iPhone 15")
+
+Tecnologías utilizadas
+
+Tecnología | Uso dentro del proyecto
+Solana | Blockchain donde se ejecuta el programa
+Anchor | Framework para desarrollar smart contracts
+Rust | Lenguaje principal del programa
+
+Autor
+
+Proyecto desarrollado como parte de la certificación de Solana, implementando un smart contract en Solana para la gestión descentralizada de inventario de teléfonos.
